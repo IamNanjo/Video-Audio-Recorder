@@ -11,6 +11,7 @@ const maximizeWindowBtn = document.getElementById("maximizeWindowBtn")
 const closeWindowBtn = document.getElementById("closeWindowBtn")
 
 const videoElement = document.querySelector("video")
+const audioElement = document.querySelector("audio")
 
 const startVidBtn = document.getElementById("startVidBtn")
 const stopVidBtn = document.getElementById("stopVidBtn")
@@ -40,7 +41,22 @@ stopVidBtn.onclick = e => {
     stopVidBtn.classList.replace("is-danger", "is-dark")
 }
 
+startAudioBtn.onclick = e => {
+    mediaRecorder.start()
+    startAudioBtn.classList.replace("is-primary", "is-dark")
+    startAudioBtn.innerText = "Recording"
+    stopAudioBtn.classList.replace("is-dark", "is-danger")
+}
+stopAudioBtn.onclick = e => {
+    mediaRecorder.stop()
+    startAudioBtn.classList.replace("is-dark", "is-primary")
+    startAudioBtn.innerText = "Start recording video"
+    stopAudioBtn.classList.replace("is-danger", "is-dark")
+
+}
+
 videoSelectBtn.onclick = getVideoSources
+audioSelectBtn.onclick = getAudioSources
 
 
 async function getVideoSources() {
@@ -58,6 +74,22 @@ async function getVideoSources() {
     )
 
     videoOptionsMenu.popup()
+}
+async function getAudioSources() {
+    const inputSources = await desktopCapturer.getSources({
+        types: ["window", "screen"]
+    })
+
+    const audioOptionsMenu = Menu.buildFromTemplate(
+        inputSources.map(source => {
+            return {
+                label: source.name,
+                click: () => selectAudioSource(source)
+            }
+        })
+    )
+
+    audioOptionsMenu.popup()
 }
 
 
@@ -84,6 +116,30 @@ async function selectVideoSource(source) {
     mediaRecorder.ondataavailable = handleDataAvailable
     mediaRecorder.onstop = handleStop
 }
+async function selectAudioSource(source) {
+    audioSelectBtn.innerText = source.name
+
+    const constraints = {
+        audio: {
+            mandatory: {
+                chromeMediaSource: "desktop",
+                chromeMediaSourceId: source.id
+            }
+        },
+        video: false
+    }
+
+    const stream = await navigator.mediaDevices.getUserMedia(constraints)
+
+    audioElement.srcObject = stream
+    audioElement.play()
+
+    const options = { mimeType: "video/webm; codecs=vp9" }
+    mediaRecorder = new MediaRecorder(stream, options)
+    mediaRecorder.ondataavailable = handleDataAvailable
+    mediaRecorder.onstop = handleStop
+}
+
 
 function handleDataAvailable(e) {
     console.log("Video data available")
