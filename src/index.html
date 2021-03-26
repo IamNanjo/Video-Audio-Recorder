@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="Styles/bulma/bulma.min.css">
+    <link rel="stylesheet" href="styles/index.css">
+    <script defer src="render.js"></script>
+    <title>Video/Audio Recorder</title>
+  </head>
+
+  <body>
+    <div class="titlebar">
+      <div id="title"><a href="https://github.com/IamNanjo/video-audio-recorder">Video/Audio Recorder</a></div>
+      <img id="minimizeWindowBtn" src="./images/minimizebtn.png" alt="X"></button>
+      <img id="maximizeWindowBtn" src="./images/maximizebtn.png" alt="X"></button>
+      <img id="closeWindowBtn" src="./images/closebtn.png" alt="X"></button>
+    </div>
+    
+    <video height="75vh"></video>
+    <br><hr><br>
+
+    <div class="is-centered">
+      <button class="button is-primary is-left" id="startVidBtn">
+        Start recording video
+      </button>
+      <button class="button is-dark is-left" id="stopVidBtn">
+        Stop recording video
+      </button>
+      
+      <button class="button is-primary is-right" id="startAudioBtn">
+        Start recording audio
+      </button>
+      <button class="button is-dark is-right" id="stopAudioBtn">
+        Stop recording audio
+      </button>
+    </div>
+    <hr>
+    <div class="is-centered">
+      <button class="button is-dark is-left" id="videoSelectBtn">Video sources</button>
+      <button class="button is-dark is-right" id="audioSelectBtn">Audio sources</button>
+    </div>
+  </body>
+
+</html>

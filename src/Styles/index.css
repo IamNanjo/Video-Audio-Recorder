@@ -1,0 +1,94 @@
+::-webkit-scrollbar {
+  display: none;
+}
+
+@font-face {
+  font-family: "Roboto";
+  src: url("Roboto/Roboto-Regular.ttf");
+}
+@font-face {
+  font-family: "Roboto Bold";
+  src: url("Roboto/Roboto-Bold.ttf");
+}
+
+html {
+  background-color: #23272A;
+  text-align: center;
+  font-family: "Roboto";
+  max-height: 100vh;
+  max-width: 100vw;
+}
+
+body {
+  margin: auto;
+  max-height: 100vh;
+  max-width: 100vw;
+  color: white;
+}
+
+video {
+  max-height: 70vh;
+}
+
+.titlebar {
+  position: fixed;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-app-region: drag;
+  background-color: black;
+  width: 100%;
+  height: 30px;
+  z-index: 100000000;
+}
+
+#title {
+  position: absolute;
+  left: 10px;
+  top: 0px;
+  font-size: 20px;
+  font-family: "Roboto Bold";
+}
+
+#minimizeWindowBtn {
+  position: absolute;
+  top: 7px;
+  right: 67px;
+  height: 15px;
+  width: 15px;
+  z-index: 100000000;
+  cursor: pointer;
+  -webkit-app-region: no-drag;
+}
+#maximizeWindowBtn {
+  position: absolute;
+  top: 7px;
+  right: 37px;
+  height: 15px;
+  width: 15px;
+  z-index: 100000000;
+  cursor: pointer;
+  -webkit-app-region: no-drag;
+}
+#closeWindowBtn {
+  position: absolute;
+  top: 7px;
+  right: 7px;
+  height: 15px;
+  width: 15px;
+  z-index: 100000000;
+  cursor: pointer;
+  -webkit-app-region: no-drag;
+}
+
+#startAudioBtn {
+  margin-left: 10%;
+}
+
+#audioSelectBtn {
+  margin-left: 10%;
+}
+
+a {
+  color: white;
+  text-decoration: none;
+}
