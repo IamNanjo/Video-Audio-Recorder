@@ -47,6 +47,8 @@ video {
   top: 0px;
   font-size: 20px;
   font-family: "Roboto Bold";
+  cursor: pointer;
+  -webkit-app-region: no-drag;
 }
 
 #minimizeWindowBtn {
@@ -86,9 +88,4 @@ video {
 
 #audioSelectBtn {
   margin-left: 10%;
-}
-
-a {
-  color: white;
-  text-decoration: none;
 }
