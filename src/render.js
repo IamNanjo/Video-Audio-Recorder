@@ -1,4 +1,5 @@
-const { getCurrentWindow, desktopCapturer, Menu, dialog } = require("electron").remote
+const { remote } = require("electron")
+const { getCurrentWindow, desktopCapturer, Menu, dialog } = remote
 const { writeFile } = require("fs")
 const open = require("open")
 
@@ -22,12 +23,21 @@ const stopAudioBtn = document.getElementById("stopAudioBtn")
 const videoSelectBtn = document.getElementById("videoSelectBtn")
 const audioSelectBtn = document.getElementById("audioSelectBtn")
 
-
 title.onclick = e => open("https://github.com/IamNanjo/video-audio-recorder")
-minimizeWindowBtn.onclick = () => getCurrentWindow().minimize()
-maximizeWindowBtn.onclick = () => (getCurrentWindow().isMaximized()) ? getCurrentWindow().unmaximize() : getCurrentWindow().maximize()
-closeWindowBtn.onclick = () => getCurrentWindow().close()
+title.addEventListener("contextmenu", () => {
+    Menu.buildFromTemplate([{
+        label: "GitHub page",
+        click: () => open("https://github.com/IamNanjo/video-audio-recorder")
+    }]).popup()
+})
 
+minimizeWindowBtn.onclick = () => getCurrentWindow().minimize()
+maximizeWindowBtn.onclick = () => {
+    getCurrentWindow().isMaximized() ? getCurrentWindow().unmaximize() : getCurrentWindow().maximize()
+    getCurrentWindow().isMaximized() ? maximizeWindowBtn.setAttribute("src", "./images/unmaximizebtn.png") : maximizeWindowBtn.setAttribute("src", "./images/maximizebtn.png")
+
+}
+closeWindowBtn.onclick = () => getCurrentWindow().close()
 startVidBtn.onclick = e => {
     mediaRecorder.start()
     startVidBtn.classList.replace("is-primary", "is-dark")
@@ -55,16 +65,35 @@ stopAudioBtn.onclick = e => {
 
 }
 
-videoSelectBtn.onclick = getVideoSources
-audioSelectBtn.onclick = getAudioSources
+videoSelectBtn.addEventListener("click", () => {
+    getSources()
+    getVideoSources()
+})
+audioSelectBtn.addEventListener("click", () => {
+    getSources()
+    getAudioSources()
+})
+
+let inputSources = []
+async function initInputSources() {
+    inputSources = await desktopCapturer.getSources({
+        types: ["window", "screen"]
+    })
+    inputSources.unshift({name: "None"})
+}
+initInputSources()
+
+
+async function getSources() {
+    inputSources = await desktopCapturer.getSources({
+        types: ["window", "screen"]
+    })
+    inputSources.unshift({name: "None"})
+}
 
 
 async function getVideoSources() {
-    const inputSources = await desktopCapturer.getSources({
-        types: ["window", "screen"]
-    })
-
-    const videoOptionsMenu = Menu.buildFromTemplate(
+    let videoOptionsMenu = Menu.buildFromTemplate(
         inputSources.map(source => {
             return {
                 label: source.name,
@@ -76,11 +105,7 @@ async function getVideoSources() {
     videoOptionsMenu.popup()
 }
 async function getAudioSources() {
-    const inputSources = await desktopCapturer.getSources({
-        types: ["window", "screen"]
-    })
-
-    const audioOptionsMenu = Menu.buildFromTemplate(
+    let audioOptionsMenu = Menu.buildFromTemplate(
         inputSources.map(source => {
             return {
                 label: source.name,
@@ -92,49 +117,41 @@ async function getAudioSources() {
     audioOptionsMenu.popup()
 }
 
-
+let constraints = {
+    video: false,
+    audio: false
+}
+let stream
+let options
 async function selectVideoSource(source) {
     videoSelectBtn.innerText = source.name
 
-    const constraints = {
-        audio: false,
-        video: {
-            mandatory: {
-                chromeMediaSource: "desktop",
-                chromeMediaSourceId: source.id
-            }
-        }
-    }
-
-    const stream = await navigator.mediaDevices.getUserMedia(constraints)
+    if (source.name == "None") return constraints["video"] = false
+    else constraints["video"] = true
+    stream = await navigator.mediaDevices.getUserMedia(constraints)
 
     videoElement.srcObject = stream
     videoElement.play()
 
-    const options = { mimeType : "video/webm; codecs=vp9" }
+    options = { mimeType : "video/webm; codecs=vp9" }
     mediaRecorder = new MediaRecorder(stream, options)
     mediaRecorder.ondataavailable = handleDataAvailable
     mediaRecorder.onstop = handleStop
 }
 async function selectAudioSource(source) {
+    console.log(source)
     audioSelectBtn.innerText = source.name
 
-    const constraints = {
-        audio: {
-            mandatory: {
-                chromeMediaSource: "desktop",
-                chromeMediaSourceId: source.id
-            }
-        },
-        video: false
-    }
+    if(source.name == "None") return constraints["audio"] = false
+    else constraints["audio"] = true
+    console.log(constraints)
 
-    const stream = await navigator.mediaDevices.getUserMedia(constraints)
+    stream = await navigator.mediaDevices.getUserMedia(constraints)
 
     audioElement.srcObject = stream
     audioElement.play()
 
-    const options = { mimeType: "video/webm; codecs=vp9" }
+    options = { mimeType: "video/webm; codecs=vp9" }
     mediaRecorder = new MediaRecorder(stream, options)
     mediaRecorder.ondataavailable = handleDataAvailable
     mediaRecorder.onstop = handleStop
@@ -142,7 +159,6 @@ async function selectAudioSource(source) {
 
 
 function handleDataAvailable(e) {
-    console.log("Video data available")
     recordedChunks.push(e.data)
 }
 
