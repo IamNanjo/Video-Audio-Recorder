@@ -2,8 +2,8 @@
     width="500" 
     xmlns="http://www.w3.org/2000/svg">
     <line 
-    x1="0" x2="500" 
-    y1="450" y2="450" 
+    x1="50" x2="450" 
+    y1="300" y2="300" 
     opacity="1"
     stroke-width="50"
     stroke="white"/>

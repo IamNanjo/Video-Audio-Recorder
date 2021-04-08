@@ -2,8 +2,10 @@
     width="500" 
     xmlns="http://www.w3.org/2000/svg">
     <rect 
-        width="500" 
-        height="500" 
+        x="25"
+        y="25"
+        width="450" 
+        height="450" 
         color-rendering="white" 
         stroke="white" 
         stroke-opacity="1" 
